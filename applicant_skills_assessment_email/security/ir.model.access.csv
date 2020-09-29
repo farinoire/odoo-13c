@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_applicant_requirement_user,Access for applicant requirement,model_applicant_requirement,hr_recruitment.group_hr_recruitment_user,1,1,1,1
+access_requirement_detail_user,Access for detailed requirement,model_requirement_detail,hr_recruitment.group_hr_recruitment_user,1,1,1,1

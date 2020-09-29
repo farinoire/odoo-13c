@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="applicant_requirement_view_form" model="ir.ui.view">
+        <field name="name">applicant.requirement.form</field>
+        <field name="model">applicant.requirement</field>
+        <field name="arch" type="xml">
+            <form string="Requirements for qualification">
+                <header>
+                    <button name="action_regenerate_pdf" string="Regenerate PDF" type="object"
+                            groups="hr_recruitment.group_hr_recruitment_manager"
+                            attrs="{'invisible' : [('state', 'in', ('draft' , 'sent'))]}" />
+                    <button name="action_requirements_send" string="Send to participants" type="object"
+                            attrs="{'invisible' : [('state', 'in', ('draft', 'sent'))]}"
+                            class="btn-primary" confirm="Are you sure that you want to send mail to each partipant?" />
+                    <button name="action_do_pdf" class="oe_highlight" string="Generate PDF" type="object"
+                            groups="hr_recruitment.group_hr_recruitment_manager"
+                            attrs="{'invisible' : [('state', 'in', ('confirmed', 'sent'))]}" />
+                    <button name="action_reactivate" string="Reactivate" type="object"
+                            groups="hr_recruitment.group_hr_recruitment_manager"
+                            attrs="{'invisible' : [('state', 'in', ('draft', 'confirmed'))]}" />
+                    <field name="state" widget="statusbar" />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button"
+                                icon="fa-envelope"
+                                name="action_get_mail_tree_view"
+                                type="object">
+                            <field name="mail_count" widget="statinfo" string="Sent mails" />
+                        </button>
+                        <button class="oe_stat_button"
+                                icon="fa-book"
+                                name="action_get_attachment_tree_view"
+                                type="object">
+                            <field name="document_count" widget="statinfo" string="Documents" />
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                            attrs="{'invisible': [('active', '=', True)]}" />
+                    <h1>
+                        <field name="name" />
+                    </h1>
+                    <div>
+                        <label for="requirement_state" />
+                        <field name="requirement_state" widget="kanban_state_selection" />
+                    </div>
+                    <div>
+                        <label for="user_id" string="Created by" />
+                        <field name="user_id" />
+                    </div>
+                    <group col="4" string="Filters">
+                        <field name='target_applied_job_id' options="{'no_create': True}" />
+                        <field name="categ_ids" widget="many2many_tags"
+                               options="{'color_field': 'color', 'no_create_edit': True}" />
+                        <field name="stage_ids" widget="many2many_tags" options="{'no_create_edit': True}" />
+                        <field name="applicant_found_count" />
+                        <field name="applicant_no_email_count" style="color:Red; font-weight: bold;"/>
+                    </group>
+                    <group col="4" string="Document elements">
+                        <field name="title" attrs="{'required': [('view_title','=', True)]}" />
+                        <field name="view_title" />
+                        <field name="subtitle" attrs="{'required': [('view_subtitle','=', True)]}" />
+                        <field name="view_subtitle" />
+                    </group>
+                    <field name="active" invisible="1" />
+
+                    <notebook>
+                        <page name="applicant_list" string="Applicants found">
+                            <field name="applicant_ids" readonly="1">
+                                <tree>
+                                    <field name="partner_name" />
+                                    <field name="email_from" />
+                                    <field name="partner_phone" />
+                                    <field name="partner_mobile" />
+                                    <field name="categ_ids" widget="many2many_tags"
+                                           options="{'color_field': 'color', 'no_create_edit': True}" />
+                                    <field name="priority" />
+                                    <field name="salary_expected" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="requirement_list" string="Requirements">
+                            <field name="requirement_detail_ids" context="{'default_requirement_id': active_id}">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle" />
+                                    <field name="text" string="Lines" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="o_attachment_preview" />
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="applicant_requirement_view_tree" model="ir.ui.view">
+        <field name="name">applicant.requirement.tree</field>
+        <field name="model">applicant.requirement</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Requirements">
+                <field name='name' />
+                <field name='target_applied_job_id' />
+                <field name="categ_ids" widget="many2many_tags"
+                       options="{'color_field': 'color', 'no_create_edit': True}" />
+                <field name="stage_ids" widget="many2many_tags" />
+                <field name="applicant_found_count" />
+                <field name="requirement_state" widget="kanban_state_selection" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="requirement_action" model="ir.actions.act_window">
+        <field name="name">Requirements</field>
+        <field name="res_model">applicant.requirement</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="applicant_requirement_view_tree" />
+    </record>
+
+    <menuitem
+            id="menu_assessment"
+            name="Assessments"
+            parent="hr_recruitment.menu_hr_recruitment_root"
+            sequence="2"
+    />
+
+    <menuitem
+            action="requirement_action"
+            id="menu_requirement_action"
+            parent="menu_assessment"
+    />
+</odoo>

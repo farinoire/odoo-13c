@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_pdf_requirement" model="ir.actions.report">
+            <field name="name">Applicant Requirements</field>
+            <field name="model">applicant.requirement</field>
+            <field name="binding_model_id" ref="model_applicant_requirement" />
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">applicant_skills_assessment_email.report_applicant_requirement</field>
+            <field name="report_file">applicant_skills_assessment_email.report_applicant_requirement</field>
+            <field name="attachment">'Applicant Requirements.pdf'</field>
+            <field name="attachment_use">False</field>
+            <field name="paperformat_id" ref="base.paperformat_us"/>
+        </record>
+    </data>
+</odoo>
